@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Таня Капусткина](https://up.htmlacademy.ru/javascript/14/user/345249).
-* Наставник: `Неизвестно`.
+* Наставник: [Екатерина Кащенко](https://up.htmlacademy.ru/javascript/14/user/109008).
 
 ---
 
