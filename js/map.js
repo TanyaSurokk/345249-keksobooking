@@ -51,15 +51,19 @@ var getArrayLength = function (array) {
 };
 
 // Формируем массив аватарок и перемешиваем его
-var avatars = [];
-for (var i = 1; i <= ADS_AMOUNT; i++) {
-  if (i < 10) {
-    avatars.push('0' + i);
-  } else {
-    avatars.push('' + i);
+var getAvatarsArray = function () {
+  var avatars = [];
+  for (var i = 1; i <= ADS_AMOUNT; i++) {
+    if (i < 10) {
+      avatars.push('0' + i);
+    } else {
+      avatars.push('' + i);
+    }
   }
-}
-avatars.sort(compareRandom);
+  return avatars.sort(compareRandom);
+};
+
+var avatars = getAvatarsArray();
 
 // Поиск и показ блока карты
 var mapElement = document.querySelector('.map');
@@ -76,34 +80,39 @@ var photoTemplate = document.querySelector('template').content.querySelector('.p
 var adTitle = OFFER_TITLES.sort(compareRandom);
 
 // Формируем массив объявлений
-var advertisments = [];
-for (var i = 0; i < ADS_AMOUNT; i++) {
-  var locationX = getRandomNumber(LOCATION_MIN_X, LOCATION_MAX_X);
-  var locationY = getRandomNumber(LOCATION_MIN_Y, LOCATION_MAX_Y);
+var createAdvertismentsArray = function (advertismentsCount) {
+  var advertisments = [];
+  for (var i = 0; i < advertismentsCount; i++) {
+    var locationX = getRandomNumber(LOCATION_MIN_X, LOCATION_MAX_X);
+    var locationY = getRandomNumber(LOCATION_MIN_Y, LOCATION_MAX_Y);
 
-  advertisments.push({
-    author: {
-      avatar: AVATAR_PATH + avatars[i] + AVATAR_FILE_TYPE
-    },
-    offer: {
-      title: adTitle[i],
-      address: (locationX + ', ' + locationY),
-      price: getRandomNumber(MIN_PRICE, MAX_PRICE),
-      type: getRandomElement(OFFER_TYPES),
-      rooms: getRandomNumber(MIN_ROOMS, MAX_ROOMS),
-      guests: getRandomNumber(MIN_GUESTS, MAX_GUESTS),
-      checkin: getRandomElement(CHECK_TIMES),
-      checkout: getRandomElement(CHECK_TIMES),
-      features: getArrayLength(FEATURES),
-      description: '',
-      photos: PHOTOS.sort(compareRandom)
-    },
-    location: {
-      x: locationX,
-      y: locationY
-    }
-  });
-}
+    advertisments.push({
+      author: {
+        avatar: AVATAR_PATH + avatars[i] + AVATAR_FILE_TYPE
+      },
+      offer: {
+        title: adTitle[i],
+        address: (locationX + ', ' + locationY),
+        price: getRandomNumber(MIN_PRICE, MAX_PRICE),
+        type: getRandomElement(OFFER_TYPES),
+        rooms: getRandomNumber(MIN_ROOMS, MAX_ROOMS),
+        guests: getRandomNumber(MIN_GUESTS, MAX_GUESTS),
+        checkin: getRandomElement(CHECK_TIMES),
+        checkout: getRandomElement(CHECK_TIMES),
+        features: getArrayLength(FEATURES),
+        description: '',
+        photos: PHOTOS.sort(compareRandom)
+      },
+      location: {
+        x: locationX,
+        y: locationY
+      }
+    });
+  }
+  return advertisments;
+};
+
+var advertisments = createAdvertismentsArray(ADS_AMOUNT);
 
 // Функция для создания меток для карты с данными из массива
 var renderMapPin = function (mapPin) {
@@ -127,6 +136,22 @@ var renderMapPinsList = function () {
 };
 
 renderMapPinsList();
+
+// Функция для перевода названия типа жилья
+var translateType = function (type) {
+  switch (type) {
+    case 'flat':
+      return 'Квартира';
+    case 'bungalo':
+      return 'Бунгало';
+    case 'house':
+      return 'Дом';
+    case 'palace':
+      return 'Дворец';
+    default:
+      return type;
+  }
+};
 
 // Функция для создания списка удобств
 var renderFeaturesList = function (featuresList) {
@@ -158,16 +183,7 @@ var renderMapCard = function (mapCard) {
   mapCardElement.querySelector('.popup__title').textContent = mapCard.offer.title;
   mapCardElement.querySelector('.popup__text--address').textContent = mapCard.offer.address;
   mapCardElement.querySelector('.popup__text--price').textContent = mapCard.offer.price + PRICE_TEXT;
-  var offerType = mapCardElement.querySelector('.popup__type');
-  if (mapCard.offer.type === 'flat') {
-    offerType.textContent = 'Квартира';
-  } else if (mapCard.offer.type === 'bungalo') {
-    offerType.textContent = 'Бунгало';
-  } else if (mapCard.offer.type === 'house') {
-    offerType.textContent = 'Дом';
-  } else {
-    offerType.textContent = 'Дворец';
-  }
+  mapCardElement.querySelector('.popup__type').textContent = translateType(mapCard.offer.type);
   mapCardElement.querySelector('.popup__text--capacity').textContent = mapCard.offer.rooms + ROOMS_TEXT + mapCard.offer.guests + GUESTS_TEXT;
   mapCardElement.querySelector('.popup__text--time').textContent = CHECKIN_TEXT + mapCard.offer.checkin + CHECKOUT_TEXT + mapCard.offer.checkout;
   mapCardElement.querySelector('.popup__features').innerHTML = '';
