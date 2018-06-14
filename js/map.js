@@ -249,12 +249,10 @@ var renderMapCard = function (mapCard) {
       closeMapCard();
     }
   });
+  document.addEventListener('keydown', onMapCardEscPress);
 
   return mapCardElement;
 };
-
-// Обработчик, закрывающий объявление при нажатии на Escape
-document.addEventListener('keydown', onMapCardEscPress);
 
 // Функция для помещения объявления в разметку - открываем соответствующее объявление, убираем предыдущее открытое
 var openMapCard = function (mapCard) {
