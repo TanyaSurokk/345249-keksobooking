@@ -73,14 +73,15 @@ var disableForm = function () {
     item.setAttribute('disabled', 'disabled');
   });
 };
+disableForm();
 
 // Функция оживления карты
-var enableMap = function () {
+var activateMap = function () {
   mapElement.classList.remove('map--faded');
 };
 
 // Функция для оживления формы
-var enableForm = function () {
+var activateForm = function () {
   adForm.classList.remove('ad-form--disabled');
   adFormFieldsets.forEach(function (item) {
     item.removeAttribute('disabled');
@@ -93,6 +94,7 @@ var setAddress = function (height) {
   var mainPinY = Math.round(mainPin.offsetTop + height);
   addressInput.value = mainPinX + ', ' + mainPinY;
 };
+setAddress(INITIAL_MAIN_PIN_HEIGHT / 2);
 
 // Формируем массив аватарок и перемешиваем его
 var getAvatarsArray = function () {
@@ -217,7 +219,7 @@ var renderPhotosList = function (photosList) {
   return fragment;
 };
 
-var OnMapCardEscPress = function (evt) {
+var onMapCardEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeMapCard();
   }
@@ -247,10 +249,12 @@ var renderMapCard = function (mapCard) {
       closeMapCard();
     }
   });
-  document.addEventListener('keydown', OnMapCardEscPress);
 
   return mapCardElement;
 };
+
+// Обработчик, закрывающий объявление при нажатии на Escape
+document.addEventListener('keydown', onMapCardEscPress);
 
 // Функция для помещения объявления в разметку - открываем соответствующее объявление, убираем предыдущее открытое
 var openMapCard = function (mapCard) {
@@ -267,23 +271,17 @@ var openMapCard = function (mapCard) {
 var closeMapCard = function () {
   var popup = document.querySelector('.map__card');
   mapElement.removeChild(popup);
-  document.removeEventListener('keydown', OnMapCardEscPress);
+  document.removeEventListener('keydown', onMapCardEscPress);
 };
 
 // Обработчик события для главной метки
 var mainPinMouseupHandler = function () {
-  enableMap();
-  enableForm();
+  activateMap();
+  activateForm();
   renderMapPinsList();
   setAddress(ACTIVE_MAIN_PIN_HEIGHT);
   mainPin.removeEventListener('mouseup', mainPinMouseupHandler);
 };
 
-// Функция активации страницы
-var enablePage = function () {
-  disableForm();
-  setAddress(INITIAL_MAIN_PIN_HEIGHT / 2);
-  mainPin.addEventListener('mouseup', mainPinMouseupHandler);
-};
-
-enablePage();
+// Обработчик, активирующий страницу
+mainPin.addEventListener('mouseup', mainPinMouseupHandler);
