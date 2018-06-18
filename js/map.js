@@ -318,6 +318,12 @@ typeField.addEventListener('change', function (evt) {
   setMinPrice(minPrice[evt.target.value]);
 });
 
+// При нажатии на кнопку отправки проверяется, что цена не меньше минимальной для конкретного типа жилья
+var submit = adForm.querySelector('.ad-form__element--submit');
+submit.addEventListener('click', function () {
+  priceInput.min = minPrice[typeField.value];
+});
+
 // Устанавливаем зависимость времени заезда и выезда
 checkInField.addEventListener('change', function (evt) {
   checkOutField.value = evt.target.value;
