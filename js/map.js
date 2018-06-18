@@ -318,17 +318,6 @@ typeField.addEventListener('change', function (evt) {
   setMinPrice(minPrice[evt.target.value]);
 });
 
-// При вводе цены автоматически меняется значение поля тип жилья
-var setHouseType = function (evt) {
-  for (var i = 0; i < typeField.length; i++) {
-    var option = typeField.options[i];
-    if (+evt.target.value >= minPrice[option.value]) {
-      typeField.value = option.value;
-    }
-  }
-};
-priceInput.addEventListener('input', setHouseType);
-
 // Устанавливаем зависимость времени заезда и выезда
 checkInField.addEventListener('change', function (evt) {
   checkOutField.value = evt.target.value;
@@ -338,11 +327,18 @@ checkOutField.addEventListener('change', function (evt) {
   checkInField.value = evt.target.value;
 });
 
-// Делаем невозможным выбор кол-ва гостей до выбора кол-ва комнат, чтобы избежать ошибок
-var capacityOption = capacityField.querySelectorAll('option');
-capacityOption.forEach(function (item) {
-  item.setAttribute('disabled', 'disabled');
-});
+// Делаем невозможным выбор кол-ва гостей до выбора кол-ва комнат, закрепляем первоначальный выбор соответствующего количества гостей
+var setInitialCapacity = function () {
+  var capacityOption = capacityField.querySelectorAll('option');
+  capacityOption.forEach(function (item) {
+    item.setAttribute('disabled', 'disabled');
+
+    if (item.selected) {
+      item.removeAttribute('disabled');
+    }
+  });
+};
+setInitialCapacity();
 
 // Устанавливаем зависимость кол-ва комнат и гостей
 var setCapacity = function (evt) {
