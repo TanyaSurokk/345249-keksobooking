@@ -19,10 +19,11 @@ var LOCATION_MIN_X = 300;
 var LOCATION_MAX_X = 900;
 var LOCATION_MIN_Y = 130;
 var LOCATION_MAX_Y = 630;
+var MAIN_PIN_MIN_X = 0;
 var PIN_HEIGHT = 70;
 var PIN_WIDTH = 50;
 var INITIAL_MAIN_PIN_HEIGHT = 65;
-var INITIAL_MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_WIDTH = 65;
 var ACTIVE_MAIN_PIN_HEIGHT = 77;
 var PRICE_TEXT = '₽/ночь';
 var ROOMS_TEXT = ' комнаты для ';
@@ -59,6 +60,8 @@ var capacityField = adForm.querySelector('#capacity');
 var roomNumberField = adForm.querySelector('#room_number');
 var resetButton = adForm.querySelector('.ad-form__reset');
 var mapPins = [];
+window.mainPinInactiveY = window.mainPin.offsetTop;
+window.mainPinInactiveX = window.mainPin.offsetLeft;
 
 // Функция для получения случайного элемента массива
 var getRandomElement = function (array) {
@@ -105,7 +108,7 @@ var activateForm = function () {
 
 // Функция для заполнения в форме поля адреса согласно координатам главной метки
 var setAddress = function (height) {
-  var mainPinX = Math.round(mainPin.offsetLeft + INITIAL_MAIN_PIN_WIDTH / 2);
+  var mainPinX = Math.round(mainPin.offsetLeft + MAIN_PIN_WIDTH / 2);
   var mainPinY = Math.round(mainPin.offsetTop + height);
   addressInput.value = mainPinX + ', ' + mainPinY;
 };
@@ -297,16 +300,18 @@ var mainPinMouseupHandler = function () {
   renderMapPinsList();
   setAddress(ACTIVE_MAIN_PIN_HEIGHT);
   mainPin.removeEventListener('mouseup', mainPinMouseupHandler);
+  window.pageActivated = true;
 };
 
 // Функция активации страницы
-var initialPage = function () {
+var setInitialPage = function () {
   disableForm();
   setAddress(INITIAL_MAIN_PIN_HEIGHT / 2);
   mainPin.addEventListener('mouseup', mainPinMouseupHandler);
+  window.pageActivated = false;
 };
 
-initialPage();
+setInitialPage();
 
 // Устанавливаем зависимость типа жилья и минимальной цены
 var setMinPrice = function (price) {
@@ -372,7 +377,7 @@ roomNumberField.addEventListener('change', setCapacity);
 resetButton.addEventListener('click', function () {
   resetForm();
   resetMap();
-  initialPage();
+  setInitialPage();
 });
 
 var resetForm = function () {
@@ -383,6 +388,8 @@ var resetForm = function () {
 var resetMap = function () {
   closeMapCard();
   mapElement.classList.add('map--faded');
+  window.mainPin.style.left = window.mainPinInactiveX + 'px';
+  window.mainPin.style.top = window.mainPinInactiveY + 'px';
   mapPins.forEach(function (item) {
     item.remove();
   });
@@ -400,3 +407,85 @@ inputs.forEach(function (input) {
     }
   });
 });
+
+// Перетаскивание главной метки
+
+(function () {
+  mainPin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      if (!window.pageActivated) {
+        mainPinMouseupHandler();
+      }
+
+      setAddress(ACTIVE_MAIN_PIN_HEIGHT);
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      var newCoordsX = mainPin.offsetLeft - shift.x;
+      var newCoordsY = mainPin.offsetTop - shift.y;
+
+      var minCoords = {
+        x: Math.floor(MAIN_PIN_MIN_X - MAIN_PIN_WIDTH / 2),
+        y: LOCATION_MIN_Y - ACTIVE_MAIN_PIN_HEIGHT
+      };
+
+      var maxCoords = {
+        x: Math.floor(mainPin.parentElement.offsetWidth - MAIN_PIN_WIDTH / 2),
+        y: LOCATION_MAX_Y - ACTIVE_MAIN_PIN_HEIGHT
+      };
+
+      if (newCoordsY < minCoords.y) {
+        newCoordsY = minCoords.y;
+      }
+
+      if (newCoordsY > maxCoords.y) {
+        newCoordsY = maxCoords.y;
+      }
+
+      if (newCoordsX < minCoords.x) {
+        newCoordsX = minCoords.x;
+      }
+
+      if (newCoordsX > maxCoords.x) {
+        newCoordsX = maxCoords.x;
+      }
+
+      mainPin.style.top = newCoordsY + 'px';
+      mainPin.style.left = newCoordsX + 'px';
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      if (!window.pageActivated) {
+        mainPinMouseupHandler();
+      }
+
+      setAddress(ACTIVE_MAIN_PIN_HEIGHT);
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+})();
+
