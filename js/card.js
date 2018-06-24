@@ -3,8 +3,8 @@
 
 (function () {
   var PRICE_TEXT = '₽/ночь';
-  var ROOMS_TEXT = ' комнаты для ';
-  var GUESTS_TEXT = ' гостей';
+  var ROOMS_TEXT_ARRAY = ['комната', 'комнаты', 'комнат'];
+  var GUESTS_TEXT_ARRAY = ['гостя', 'гостей', 'гостей'];
   var CHECKIN_TEXT = 'Заезд после ';
   var CHECKOUT_TEXT = ', выезд до ';
 
@@ -51,7 +51,7 @@
     return fragment;
   };
 
-  var onMapCardEscPress = function (evt) {
+  var MapCardEscPressHandler = function (evt) {
     window.utils.isEscKeycode(evt, closeMapCard);
   };
 
@@ -63,7 +63,7 @@
     mapCardElement.querySelector('.popup__text--address').textContent = mapCard.offer.address;
     mapCardElement.querySelector('.popup__text--price').textContent = mapCard.offer.price + PRICE_TEXT;
     mapCardElement.querySelector('.popup__type').textContent = translateType(mapCard.offer.type);
-    mapCardElement.querySelector('.popup__text--capacity').textContent = mapCard.offer.rooms + ROOMS_TEXT + mapCard.offer.guests + GUESTS_TEXT;
+    mapCardElement.querySelector('.popup__text--capacity').textContent = mapCard.offer.rooms + ' ' + window.utils.setDeclension(mapCard.offer.rooms, ROOMS_TEXT_ARRAY) + ' для ' + mapCard.offer.guests + ' ' + window.utils.setDeclension(mapCard.offer.guests, GUESTS_TEXT_ARRAY);
     mapCardElement.querySelector('.popup__text--time').textContent = CHECKIN_TEXT + mapCard.offer.checkin + CHECKOUT_TEXT + mapCard.offer.checkout;
     mapCardElement.querySelector('.popup__features').innerHTML = '';
     mapCardElement.querySelector('.popup__features').appendChild(renderFeaturesList(mapCard.offer.features));
@@ -77,7 +77,7 @@
     popupClose.addEventListener('keydown', function (evt) {
       window.utils.isEnterKeycode(evt, closeMapCard);
     });
-    document.addEventListener('keydown', onMapCardEscPress);
+    document.addEventListener('keydown', MapCardEscPressHandler);
 
     return mapCardElement;
   };
@@ -100,7 +100,7 @@
       return;
     }
     window.map.mapElement.removeChild(popup);
-    document.removeEventListener('keydown', onMapCardEscPress);
+    document.removeEventListener('keydown', MapCardEscPressHandler);
   };
 
   window.card = {

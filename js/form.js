@@ -21,6 +21,7 @@
   var capacityField = adForm.querySelector('#capacity');
   var roomNumberField = adForm.querySelector('#room_number');
   var resetButton = adForm.querySelector('.ad-form__reset');
+  var successElement = document.querySelector('.success');
 
   // Изначальное состояние формы - добавляем полям атрибут disabled
   var disableForm = function () {
@@ -126,17 +127,50 @@
     });
   };
 
-  // Реализуем сброс страницы в исходное неактивное состояние без перезагрузки
-  resetButton.addEventListener('click', function () {
+  // Функция деактивации страницы
+  var deactivatePage = function () {
     resetForm();
     window.map.resetMap();
     window.map.setInitialPage();
+  };
+
+  // Реализуем сброс страницы в исходное неактивное состояние без перезагрузки
+  resetButton.addEventListener('click', function () {
+    deactivatePage();
+  });
+
+  // Появление и закрытие окна об успешном заполнении формы
+  var closeSuccessElement = function () {
+    successElement.classList.add('hidden');
+    document.removeEventListener('click', closeSuccessElement);
+    document.removeEventListener('keydown', successElementEscPressHandler);
+  };
+
+  var successElementEscPressHandler = function (evt) {
+    window.utils.isEscKeycode(evt, closeSuccessElement);
+  };
+
+  var adFormSubmitSuccessHandler = function () {
+    deactivatePage();
+    successElement.classList.remove('hidden');
+    document.activeElement.blur();
+    document.addEventListener('click', closeSuccessElement);
+    document.addEventListener('keydown', successElementEscPressHandler);
+  };
+
+  // Появление окна об ошибке в отправке данных на сервер
+  var adFormSubmitErrorHandler = function (errorMessage) {
+    window.createErrorMessage(errorMessage);
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.upload(adFormSubmitSuccessHandler, adFormSubmitErrorHandler, new FormData(adForm));
+    evt.preventDefault();
   });
 
   window.form = {
     disableForm: disableForm,
     activateForm: activateForm,
-    setAddress: setAddress,
-    resetForm: resetForm
+    setAddress: setAddress
   };
 })();
