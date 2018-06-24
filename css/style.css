@@ -1221,3 +1221,71 @@ fieldset {
   border: 4px solid red !important;
   border-radius: 10px !important;
 }
+
+.error-block {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+
+  padding-top: 300px;
+  padding-left: 150px;
+  padding-right: 150px;
+
+  text-align: center;
+  vertical-align: middle;
+
+  background-color: rgba(255, 0, 0, 0.5);
+  font-size: 30px;
+  color: #000000;
+  font-weight: 700;
+}
+
+.error-block__close {
+  width: 38px;
+  height: 38px;
+  font-size: 0;
+  border: 0;
+  cursor: pointer;
+  position: absolute;
+  top: 78px;
+  right: 90px;
+  padding: 0;
+  background-color: transparent;
+}
+
+.error-block__close::before,
+.error-block__close::after {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 10px;
+  background-color: #000000;
+  border-radius: 1px;
+  left: -2px;
+  top: 14px;
+}
+
+.error-block__close::before {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.error-block__close::after {
+  -webkit-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+.error-block__close:hover.error-block__close::before,
+.error-block__close:hover.error-block__close::after {
+  background-color: #696969;
+}
