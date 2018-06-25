@@ -30,13 +30,18 @@
     return mapPinElement;
   };
 
-  // Функция для вставки меток в блок
-  var renderMapPinsList = function () {
+  // Функция для вставки меток в блок (удачная загрузка данных с сервера)
+  var loadSuccessHandler = function (advertisments) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.advertisments.length; i++) {
-      fragment.appendChild(renderMapPin(window.data.advertisments[i]));
+    for (var i = 0; i < advertisments.length; i++) {
+      fragment.appendChild(renderMapPin(advertisments[i]));
     }
     mapPinsList.appendChild(fragment);
+  };
+
+  // Вывод сообщения об ошибке в случае неудачной загрузки с сервера
+  var loadErrorHandler = function (errorMessage) {
+    window.createErrorMessage(errorMessage);
   };
 
   // Функция удаления меток с карты
@@ -47,7 +52,8 @@
   };
 
   window.pin = {
-    renderMapPinsList: renderMapPinsList,
+    loadSuccessHandler: loadSuccessHandler,
+    loadErrorHandler: loadErrorHandler,
     removeMapPins: removeMapPins
   };
 })();

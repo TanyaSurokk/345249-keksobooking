@@ -6,6 +6,8 @@
   var INITIAL_MAIN_PIN_HEIGHT = 65;
   var MAIN_PIN_WIDTH = 65;
   var ACTIVE_MAIN_PIN_HEIGHT = 77;
+  var LOCATION_MIN_Y = 130;
+  var LOCATION_MAX_Y = 630;
 
   // Находим необходимые элементы
   var mapElement = document.querySelector('.map');
@@ -32,7 +34,7 @@
   var mainPinMouseupHandler = function () {
     activateMap();
     window.form.activateForm();
-    window.pin.renderMapPinsList();
+    window.backend.load(window.pin.loadSuccessHandler, window.pin.loadErrorHandler);
     window.form.setAddress(MAIN_PIN_WIDTH, ACTIVE_MAIN_PIN_HEIGHT, mainPin);
     mainPin.removeEventListener('mouseup', mainPinMouseupHandler);
     window.pageActivated = true;
@@ -80,12 +82,12 @@
 
       var minCoords = {
         x: Math.floor(MAIN_PIN_MIN_X - MAIN_PIN_WIDTH / 2),
-        y: window.data.LOCATION_MIN_Y - ACTIVE_MAIN_PIN_HEIGHT
+        y: LOCATION_MIN_Y - ACTIVE_MAIN_PIN_HEIGHT
       };
 
       var maxCoords = {
         x: Math.floor(mainPin.parentElement.offsetWidth - MAIN_PIN_WIDTH / 2),
-        y: window.data.LOCATION_MAX_Y - ACTIVE_MAIN_PIN_HEIGHT
+        y: LOCATION_MAX_Y - ACTIVE_MAIN_PIN_HEIGHT
       };
 
       if (newCoordsY < minCoords.y) {
