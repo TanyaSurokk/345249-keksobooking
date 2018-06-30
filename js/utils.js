@@ -2,19 +2,22 @@
 // Блок служебных функций
 
 (function () {
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
+  var Keycode = {
+    ESC: 27,
+    ENTER: 13
+  };
+  var DEBOUNCE_INTERVAL = 500;
 
   window.utils = {
     // Функции нажатия горячих клавиш
     isEscKeycode: function (evt, action) {
-      if (evt.keyCode === ESC_KEYCODE) {
+      if (evt.keyCode === Keycode.ESC) {
         action();
       }
     },
 
     isEnterKeycode: function (evt, action, data) {
-      if (evt.keyCode === ENTER_KEYCODE) {
+      if (evt.keyCode === Keycode.ENTER) {
         action(data);
       }
     },
@@ -31,6 +34,21 @@
       } else {
         return array[2];
       }
+    },
+
+    // Функция для устранения дребезга
+    debounce: function (fun) {
+      var lastTimeout = null;
+
+      return function () {
+        var args = arguments;
+        if (lastTimeout) {
+          window.clearTimeout(lastTimeout);
+        }
+        lastTimeout = window.setTimeout(function () {
+          fun.apply(null, args);
+        }, DEBOUNCE_INTERVAL);
+      };
     }
   };
 })();

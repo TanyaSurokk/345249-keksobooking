@@ -15,11 +15,18 @@
   window.mainPinInactiveY = mainPin.offsetTop;
   window.mainPinInactiveX = mainPin.offsetLeft;
 
+  // Добавляет активацию страницы с клавиатуры
+  var mainPinEnterPressHandler = function (evt) {
+    window.utils.isEnterKeycode(evt, mainPinMouseupHandler);
+    window.form.setAddress(MAIN_PIN_WIDTH, ACTIVE_MAIN_PIN_HEIGHT, mainPin);
+    mainPin.removeEventListener('keydown', mainPinEnterPressHandler);
+  };
+
   // Функция установки изначального состояния страницы
   var setInitialPage = function () {
     window.form.disableForm();
     window.form.setAddress(MAIN_PIN_WIDTH, INITIAL_MAIN_PIN_HEIGHT / 2, mainPin);
-    mainPin.addEventListener('mouseup', mainPinMouseupHandler);
+    mainPin.addEventListener('keydown', mainPinEnterPressHandler);
     window.pageActivated = false;
   };
 
@@ -35,8 +42,6 @@
     activateMap();
     window.form.activateForm();
     window.backend.load(window.pin.loadSuccessHandler, window.pin.loadErrorHandler);
-    window.form.setAddress(MAIN_PIN_WIDTH, ACTIVE_MAIN_PIN_HEIGHT, mainPin);
-    mainPin.removeEventListener('mouseup', mainPinMouseupHandler);
     window.pageActivated = true;
   };
 
@@ -47,6 +52,7 @@
     mainPin.style.left = window.mainPinInactiveX + 'px';
     mainPin.style.top = window.mainPinInactiveY + 'px';
     window.pin.removeMapPins();
+    window.filters.disableFilters();
   };
 
   // Перетаскивание главной метки

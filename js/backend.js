@@ -29,7 +29,7 @@
     xhr.timeout = TIMEOUT;
 
     xhr.open(method, url);
-    xhr.send((data) ? data : '');
+    xhr.send(data ? data : '');
   };
 
   window.backend = {

@@ -4,11 +4,11 @@
 (function () {
   var MAX_ROOM_NUMBER = 100;
   var NO_GUESTS_VALUE = 0;
-  var minPrice = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
+  var MinPrice = {
+    'bungalo': '0',
+    'flat': '1000',
+    'house': '5000',
+    'palace': '10000'
   };
 
   var adForm = document.querySelector('.ad-form');
@@ -45,13 +45,13 @@
   };
 
   typeField.addEventListener('change', function (evt) {
-    setMinPrice(minPrice[evt.target.value]);
+    setMinPrice(MinPrice[evt.target.value]);
   });
 
   // При нажатии на кнопку отправки проверяется, что цена не меньше минимальной для конкретного типа жилья
   var submit = adForm.querySelector('.ad-form__element--submit');
   submit.addEventListener('click', function () {
-    priceInput.min = minPrice[typeField.value];
+    priceInput.min = MinPrice[typeField.value];
   });
 
   // Устанавливаем зависимость времени заезда и выезда
