@@ -126,6 +126,7 @@
     inputs.forEach(function (input) {
       input.classList.remove('error');
     });
+    window.images.resetImages();
   };
 
   // Функция деактивации страницы
