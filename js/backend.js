@@ -32,12 +32,18 @@
     xhr.send(data ? data : '');
   };
 
+  // Функция отправки данных на сервер
+  var upload = function (onLoad, onError, data) {
+    getXHR(onLoad, onError, 'POST', URL_UPLOAD, data);
+  };
+
+  // Функция получения данных с сервера
+  var load = function (onLoad, onError) {
+    getXHR(onLoad, onError, 'GET', URL_LOAD);
+  };
+
   window.backend = {
-    upload: function (onLoad, onError, data) {
-      getXHR(onLoad, onError, 'POST', URL_UPLOAD, data);
-    },
-    load: function (onLoad, onError) {
-      getXHR(onLoad, onError, 'GET', URL_LOAD);
-    }
+    upload: upload,
+    load: load
   };
 })();

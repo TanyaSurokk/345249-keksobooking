@@ -121,6 +121,7 @@
   // Функция сброса формы
   var resetForm = function () {
     adForm.reset();
+    priceInput.placeholder = MinPrice[typeField.value];
     adForm.classList.add('ad-form--disabled');
     inputs.forEach(function (input) {
       input.classList.remove('error');
@@ -131,6 +132,7 @@
   var deactivatePage = function () {
     resetForm();
     window.map.resetMap();
+    window.filters.resetFilters();
     window.map.setInitialPage();
   };
 

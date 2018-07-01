@@ -88,13 +88,15 @@
     advertsData = data.slice();
   };
 
-  window.filters = {
-    activateFilters: activateFilters,
-    disableFilters: function () {
-      disableFilters();
-      filtersBlock.reset();
-    },
-    getAdvertsData: getAdvertsData
+  // Функция сброса фильтра при нажатии на reset
+  var resetFilters = function () {
+    disableFilters();
+    filtersBlock.reset();
   };
 
+  window.filters = {
+    activateFilters: activateFilters,
+    resetFilters: resetFilters,
+    getAdvertsData: getAdvertsData
+  };
 })();

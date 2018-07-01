@@ -99,5 +99,4 @@
     openMapCard: openMapCard,
     closeMapCard: closeMapCard
   };
-
 })();
