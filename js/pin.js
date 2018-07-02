@@ -11,24 +11,24 @@
   var mapPins = [];
 
   // Функция для создания меток для карты с данными из массива
-  var renderMapPin = function (mapPin) {
-    var mapPinElement = mapPinTemplate.cloneNode(true);
+  var renderMapPin = function (mapPinElement) {
+    var mapPin = mapPinTemplate.cloneNode(true);
 
-    mapPinElement.style.left = mapPin.location.x - PIN_WIDTH / 2 + 'px';
-    mapPinElement.style.top = mapPin.location.y - PIN_HEIGHT + 'px';
-    mapPinElement.querySelector('img').src = mapPin.author.avatar;
-    mapPinElement.querySelector('img').alt = mapPin.offer.title;
+    mapPin.style.left = mapPinElement.location.x - PIN_WIDTH / 2 + 'px';
+    mapPin.style.top = mapPinElement.location.y - PIN_HEIGHT + 'px';
+    mapPin.querySelector('img').src = mapPinElement.author.avatar;
+    mapPin.querySelector('img').alt = mapPinElement.offer.title;
 
-    mapPinElement.addEventListener('click', function () {
-      window.card.openMapCard(mapPin);
-    });
-
-    mapPinElement.addEventListener('keydown', function (evt) {
-      window.utils.isEnterKeycode(evt, window.card.openMapCard, mapPin);
-    });
-
-    mapPins.push(mapPinElement);
-    return mapPinElement;
+    var mapPinClickHandler = function () {
+      window.card.openMapCard(mapPinElement);
+    };
+    var mapPinKeydownHandler = function (evt) {
+      window.utils.isEnterKeycode(evt, window.card.openMapCard, mapPinElement);
+    };
+    mapPin.addEventListener('click', mapPinClickHandler);
+    mapPin.addEventListener('keydown', mapPinKeydownHandler);
+    mapPins.push(mapPin);
+    return mapPin;
   };
 
   // Функция для вставки меток в блок (удачная загрузка данных с сервера)

@@ -23,23 +23,23 @@
   // Функция для создания списка удобств
   var renderFeaturesList = function (featuresList) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < featuresList.length; i++) {
+    featuresList.forEach(function (item) {
       var featureItem = document.createElement('li');
       featureItem.classList.add('popup__feature');
-      featureItem.classList.add('popup__feature--' + featuresList[i]);
+      featureItem.classList.add('popup__feature--' + item);
       fragment.appendChild(featureItem);
-    }
+    });
     return fragment;
   };
 
   // Функция для создания списка фотографий
   var renderPhotosList = function (photosList) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < photosList.length; i++) {
-      var photoElement = photoTemplate.cloneNode();
-      photoElement.src = photosList[i];
-      fragment.appendChild(photoElement);
-    }
+    photosList.forEach(function (item) {
+      var photo = photoTemplate.cloneNode();
+      photo.src = item;
+      fragment.appendChild(photo);
+    });
     return fragment;
   };
 
@@ -48,41 +48,45 @@
   };
 
   // Функция для создания DOM-элемента объявления и заполнения его данными из массива
-  var renderMapCard = function (mapCard) {
-    var mapCardElement = mapCardTemplate.cloneNode(true);
+  var renderMapCard = function (mapCardElement) {
+    var mapCard = mapCardTemplate.cloneNode(true);
 
-    mapCardElement.querySelector('.popup__title').textContent = mapCard.offer.title;
-    mapCardElement.querySelector('.popup__text--address').textContent = mapCard.offer.address;
-    mapCardElement.querySelector('.popup__text--price').textContent = mapCard.offer.price + Text.PRICE;
-    mapCardElement.querySelector('.popup__type').textContent = typeEnglishToRussian[mapCard.offer.type];
-    mapCardElement.querySelector('.popup__text--capacity').textContent = mapCard.offer.rooms + ' ' + window.utils.setDeclension(mapCard.offer.rooms, Text.ROOMS) + ' для ' + mapCard.offer.guests + ' ' + window.utils.setDeclension(mapCard.offer.guests, Text.GUESTS);
-    mapCardElement.querySelector('.popup__text--time').textContent = Text.CHECKIN + mapCard.offer.checkin + Text.CHECKOUT + mapCard.offer.checkout;
-    mapCardElement.querySelector('.popup__features').innerHTML = '';
-    mapCardElement.querySelector('.popup__features').appendChild(renderFeaturesList(mapCard.offer.features));
-    mapCardElement.querySelector('.popup__description').textContent = mapCard.offer.description;
-    mapCardElement.querySelector('.popup__photos').innerHTML = '';
-    mapCardElement.querySelector('.popup__photos').appendChild(renderPhotosList(mapCard.offer.photos));
-    mapCardElement.querySelector('.popup__avatar').src = mapCard.author.avatar;
+    mapCard.querySelector('.popup__title').textContent = mapCardElement.offer.title;
+    mapCard.querySelector('.popup__text--address').textContent = mapCardElement.offer.address;
+    mapCard.querySelector('.popup__text--price').textContent = mapCardElement.offer.price + Text.PRICE;
+    mapCard.querySelector('.popup__type').textContent = typeEnglishToRussian[mapCardElement.offer.type];
+    mapCard.querySelector('.popup__text--capacity').textContent = mapCardElement.offer.rooms + ' ' + window.utils.setDeclension(mapCardElement.offer.rooms, Text.ROOMS) + ' для ' + mapCardElement.offer.guests + ' ' + window.utils.setDeclension(mapCardElement.offer.guests, Text.GUESTS);
+    mapCard.querySelector('.popup__text--time').textContent = Text.CHECKIN + mapCardElement.offer.checkin + Text.CHECKOUT + mapCardElement.offer.checkout;
+    mapCard.querySelector('.popup__features').innerHTML = '';
+    mapCard.querySelector('.popup__features').appendChild(renderFeaturesList(mapCardElement.offer.features));
+    mapCard.querySelector('.popup__description').textContent = mapCardElement.offer.description;
+    mapCard.querySelector('.popup__photos').innerHTML = '';
+    mapCard.querySelector('.popup__photos').appendChild(renderPhotosList(mapCardElement.offer.photos));
+    mapCard.querySelector('.popup__avatar').src = mapCardElement.author.avatar;
 
-    var popupClose = mapCardElement.querySelector('.popup__close');
-    popupClose.addEventListener('click', closeMapCard);
-    popupClose.addEventListener('keydown', function (evt) {
+    var popupClose = mapCard.querySelector('.popup__close');
+    var popupCloseClickHandler = function () {
+      closeMapCard();
+    };
+    var popupCloseKeydownHandler = function (evt) {
       window.utils.isEnterKeycode(evt, closeMapCard);
-    });
+    };
+    popupClose.addEventListener('click', popupCloseClickHandler);
+    popupClose.addEventListener('keydown', popupCloseKeydownHandler);
     document.addEventListener('keydown', mapCardEscPressHandler);
 
-    return mapCardElement;
+    return mapCard;
   };
 
   // Функция для помещения объявления в разметку - открываем соответствующее объявление, убираем предыдущее открытое
   var openMapCard = function (mapCard) {
-    var card = window.map.mapElement.querySelector('.map__card');
+    var card = window.map.map.querySelector('.map__card');
     if (card) {
       closeMapCard();
     }
     var fragment = document.createDocumentFragment();
     fragment.appendChild(renderMapCard(mapCard));
-    window.map.mapElement.insertBefore(fragment, mapFilters);
+    window.map.map.insertBefore(fragment, mapFilters);
   };
 
   // Закрываем объявление, удаляем обработчик события
@@ -91,7 +95,7 @@
     if (!popup) {
       return;
     }
-    window.map.mapElement.removeChild(popup);
+    window.map.map.removeChild(popup);
     document.removeEventListener('keydown', mapCardEscPressHandler);
   };
 

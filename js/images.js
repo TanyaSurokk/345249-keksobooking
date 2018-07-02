@@ -4,7 +4,7 @@
 (function () {
   var AVATAR_DEFAULT_SRC = 'img/muffin-grey.svg';
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var imageSize = {
+  var ImageSize = {
     WIDTH: 70,
     HEIGHT: 70
   };
@@ -25,8 +25,8 @@
     var newPhotoPreview = photoPreview.cloneNode();
     var image = document.createElement('img');
     image.src = src;
-    image.width = imageSize.WIDTH;
-    image.height = imageSize.HEIGHT;
+    image.width = ImageSize.WIDTH;
+    image.height = ImageSize.HEIGHT;
     newPhotoPreview.appendChild(image);
     imagesContainer.insertBefore(newPhotoPreview, photoPreview);
   };

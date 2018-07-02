@@ -21,7 +21,7 @@
   var capacityField = adForm.querySelector('#capacity');
   var roomNumberField = adForm.querySelector('#room_number');
   var resetButton = adForm.querySelector('.ad-form__reset');
-  var successElement = document.querySelector('.success');
+  var successBlock = document.querySelector('.success');
 
   // Изначальное состояние формы - добавляем полям атрибут disabled
   var disableForm = function () {
@@ -143,22 +143,26 @@
   });
 
   // Появление и закрытие окна об успешном заполнении формы
-  var closeSuccessElement = function () {
-    successElement.classList.add('hidden');
-    document.removeEventListener('click', closeSuccessElement);
-    document.removeEventListener('keydown', successElementEscPressHandler);
+  var closeSuccessBlock = function () {
+    successBlock.classList.add('hidden');
+    document.removeEventListener('click', successBlockClickHandler);
+    document.removeEventListener('keydown', successBlockEscPressHandler);
   };
 
-  var successElementEscPressHandler = function (evt) {
-    window.utils.isEscKeycode(evt, closeSuccessElement);
+  var successBlockClickHandler = function () {
+    closeSuccessBlock();
+  };
+
+  var successBlockEscPressHandler = function (evt) {
+    window.utils.isEscKeycode(evt, closeSuccessBlock);
   };
 
   var adFormSubmitSuccessHandler = function () {
     deactivatePage();
-    successElement.classList.remove('hidden');
+    successBlock.classList.remove('hidden');
     document.activeElement.blur();
-    document.addEventListener('click', closeSuccessElement);
-    document.addEventListener('keydown', successElementEscPressHandler);
+    document.addEventListener('click', closeSuccessBlock);
+    document.addEventListener('keydown', successBlockEscPressHandler);
   };
 
   // Появление окна об ошибке в отправке данных на сервер

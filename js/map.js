@@ -10,8 +10,8 @@
   var LOCATION_MAX_Y = 630;
 
   // Находим необходимые элементы
-  var mapElement = document.querySelector('.map');
-  var mainPin = mapElement.querySelector('.map__pin--main');
+  var map = document.querySelector('.map');
+  var mainPin = map.querySelector('.map__pin--main');
   window.mainPinInactiveY = mainPin.offsetTop;
   window.mainPinInactiveX = mainPin.offsetLeft;
 
@@ -34,7 +34,7 @@
 
   // Функция оживления карты
   var activateMap = function () {
-    mapElement.classList.remove('map--faded');
+    map.classList.remove('map--faded');
   };
 
   // Функция активации страницы
@@ -48,7 +48,7 @@
   // Функция сброса карты в первоначальное состояние
   var resetMap = function () {
     window.card.closeMapCard();
-    mapElement.classList.add('map--faded');
+    map.classList.add('map--faded');
     mainPin.style.left = window.mainPinInactiveX + 'px';
     mainPin.style.top = window.mainPinInactiveY + 'px';
     window.pin.removeMapPins();
@@ -133,7 +133,7 @@
   });
 
   window.map = {
-    mapElement: mapElement,
+    map: map,
     resetMap: resetMap,
     setInitialPage: setInitialPage
   };
