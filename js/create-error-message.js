@@ -25,11 +25,13 @@
 
     document.addEventListener('keydown', errorBlockEscPressHandler);
 
-    nodeClose.addEventListener('click', function () {
+    var nodeCloseClickHandler = function () {
       closeErrorBlock();
-    });
-    nodeClose.addEventListener('keydown', function (evt) {
+    };
+    var nodeCloseKeydownHandler = function (evt) {
       window.utils.isEnterKeycode(evt, closeErrorBlock);
-    });
+    };
+    nodeClose.addEventListener('click', nodeCloseClickHandler);
+    nodeClose.addEventListener('keydown', nodeCloseKeydownHandler);
   };
 })();
